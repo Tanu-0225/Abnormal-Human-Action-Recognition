@@ -1,0 +1,24 @@
+# The dataset is private and must never be committed
+data/
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Generated artefacts
+models/
+*.keras
+*.h5
+predictions/
+results/latest/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Local-only outputs (contain people from the private data or the author)
+results/reproduced/
+docs/demo.gif
