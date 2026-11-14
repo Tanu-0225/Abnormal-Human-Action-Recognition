@@ -8,7 +8,21 @@ The idea started during my internship in 2022: could a small, cheap model watch 
 
 We recorded short clips of each action, cut them into frames, resized everything to 224×224 and split the frames 80/10/10 into train, validation and test sets.
 
-![Data preparation](docs/data_preparation.png)
+```mermaid
+flowchart LR
+    A[Video clips<br/>one folder per action] --> B[Extract frames<br/>resize to 224×224]
+    B --> C{Split}
+    C -->|80%| D[Train]
+    C -->|10%| E[Validation]
+    C -->|10%| F[Test]
+    D --> G[Augment<br/>rotate, shift, zoom, flip]
+    G --> H[MobileNetV2<br/>+ classification head]
+    E -.->|tune| H
+    H --> I[Trained model]
+    F --> J[Evaluate]
+    I --> J
+    I --> K[Predict<br/>images, videos, webcam]
+```
 
 The model is MobileNetV2 pre-trained on ImageNet, with a small head on top: global average pooling, a 128-unit dense layer, dropout of 0.5 and a 4-way softmax. Training happens in two rounds. First only the head is trained for 35 epochs with the backbone frozen (Adam, learning rate 1e-4). Then the last 50 layers of MobileNetV2 are unfrozen and the whole thing is fine-tuned for another 17 epochs at a ten times smaller learning rate. During training, frames get randomly rotated, shifted, zoomed and flipped, which helped a lot with such a small dataset.
 
